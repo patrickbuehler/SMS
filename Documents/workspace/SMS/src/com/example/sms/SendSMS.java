@@ -14,15 +14,25 @@ import android.widget.Toast;
 
 
 public class SendSMS extends BroadcastReceiver {
-	
-	final SmsManager sms = SmsManager.getDefault();
-
-	@Override
-	public void onReceive(Context context, Intent intent) {
-		// TODO Auto-generated method stub
-		String destination = new String(); 
-		String message = new String();
-		sms.sendTextMessage(destination, null, message, null, null);
+	 static SmsManager sms = SmsManager.getDefault();
+	 // Will this SmsManager work outside of sendIt?
+	 // Why have this file structure?
+	  static String phoneNum = new String();
+	  // private?
+	  String phoneMessage = new String();
+	 
+	 public static void sendIt(String destination, String message){
+	 	// TODO Auto-generated method stub
+		try {
+			sms.sendTextMessage(destination, null, message, null, null);
+	 }
+		catch (Exception e) { //from Prof Abadi's code incomingSMS. Is this sufficient?
+			Log.e("SmsReceiver", "Exception smsReceiver" +e);
+		}
 	}
-
+	
+	public void onReceive(Context context, Intent intent)
+	{
+		
+	}
 }

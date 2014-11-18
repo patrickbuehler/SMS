@@ -9,8 +9,60 @@
     tools:context="com.example.sms.MainActivity" >
 
     <TextView
+        android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/hello_world" />
+
+    <EditText
+        android:id="@+id/phoneNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_below="@+id/textView1"
+        android:layout_marginTop="50dp"
+        android:ems="10" 
+        android:inputType="text">
+    </EditText>
+        
+   <EditText
+        android:id="@+id/textMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_below="@+id/phoneNumber"
+        android:layout_marginTop="50dp"
+        android:ems="10" android:inputType="text">
+   </EditText>
+
+   <Button
+       android:id="@+id/go"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_alignLeft="@+id/textMessage"
+       android:layout_below="@+id/textMessage"
+       android:layout_marginTop="46dp"
+       android:text="Go!" />
+
+   <EditText
+       android:id="@+id/date"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_alignRight="@+id/go"
+       android:layout_centerVertical="true"
+       android:ems="10"
+       android:inputType="date" >
+
+       <requestFocus />
+   </EditText>
+
+   <EditText
+       android:id="@+id/time"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_centerHorizontal="true"
+       android:layout_centerVertical="true"
+       android:ems="10"
+       android:inputType="time" />
 
 </RelativeLayout>
