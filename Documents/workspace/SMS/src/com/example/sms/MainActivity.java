@@ -1,6 +1,9 @@
 package com.example.sms;
 
+import java.util.TreeMap;
+
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,7 +14,15 @@ import android.widget.EditText;
 
 
 public class MainActivity extends Activity {
-
+	
+	  String number = new String();
+      String message = new String();
+      int identifier = 0;
+      
+      TreeMap<Integer, String> numberTreemap = new TreeMap();
+      TreeMap<Integer, String> messageTreemap = new TreeMap();
+      Context.getSystemService(Context.ALARM_SERVICE)
+      
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,6 +35,8 @@ public class MainActivity extends Activity {
         // Bad to make these final?
         // Why cast to EditText
         Button go = (Button) findViewById(R.id.go);
+       // getFilesDir();
+      
         
 //		Context.getSystemService(Context.ALARM_SERVICE);
 
@@ -38,13 +51,27 @@ public class MainActivity extends Activity {
 				// to allow for more than one "queued" request?
 				// How else to accommodate this?
 				
+				// Store on disk in case the phone is shut down
+				// Use a treemap. Keys are when to send, and values are what you're sending
+				// Android serialization will say about how to store stuff to disk.
 				
-				String number = textMessage.getText().toString();
-				String message = phoneNumber.getText().toString();
-				SendSMS.sendIt(number, message);
+				number = textMessage.getText().toString();
+				message = phoneNumber.getText().toString();
+				numberTreemap.put(identifier, number);
+				messageTreemap.put(identifier, message);
+				identifier++;
+				// Tree map won't matter because you can't have more than one to each person
+
+				//in alarm
+				try { 
+					SendSMS.sendIt(number, message);
+				}
+				 	catch (IllegalArgumentException e) {
+				 		System.out.println("Please enter a valid phone number and text message."); 
+				 		// Make this a system dialogue
+				 	}
 			}
 		});
-
         
     }
 
