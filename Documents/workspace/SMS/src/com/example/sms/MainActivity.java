@@ -1,10 +1,13 @@
 package com.example.sms;
 
+import java.util.ArrayList;
 import java.util.TreeMap;
 
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,14 +17,14 @@ import android.widget.EditText;
 
 
 public class MainActivity extends Activity {
-	
-	  String number = new String();
-      String message = new String();
-      int identifier = 0;
+		//remember to change Manifest to accommodate only newer than 19
       
-      TreeMap<Integer, String> numberTreemap = new TreeMap();
-      TreeMap<Integer, String> messageTreemap = new TreeMap();
-      Context.getSystemService(Context.ALARM_SERVICE)
+//      static TreeMap<Long, String> numberTreemap = new TreeMap();
+//      static TreeMap<Integer, String> messageTreemap = new TreeMap();
+      static TreeMap<Long, String[][]> treemap = new TreeMap();
+
+      AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+      
       
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +36,6 @@ public class MainActivity extends Activity {
         final EditText date = (EditText) findViewById(R.id.date);
         final EditText time = (EditText) findViewById(R.id.time);
         // Bad to make these final?
-        // Why cast to EditText
         Button go = (Button) findViewById(R.id.go);
        // getFilesDir();
       
@@ -47,35 +49,36 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				
-				// Do I want to make different instances of the SendSMS class 
-				// to allow for more than one "queued" request?
-				// How else to accommodate this?
-				
 				// Store on disk in case the phone is shut down
-				// Use a treemap. Keys are when to send, and values are what you're sending
 				// Android serialization will say about how to store stuff to disk.
+				String number = textMessage.getText().toString();
+				String message = phoneNumber.getText().toString();
+				String[][] keyData = new String[2][];
+				long time = 201412120918L;	// Use Alex's code + TimeManager.java
 				
-				number = textMessage.getText().toString();
-				message = phoneNumber.getText().toString();
-				numberTreemap.put(identifier, number);
-				messageTreemap.put(identifier, message);
-				identifier++;
-				// Tree map won't matter because you can't have more than one to each person
-
-				//in alarm
-				try { 
-					SendSMS.sendIt(number, message);
+				if (treemap.containsKey(time)) {
+					keyData = treemap.get(time);
+					keyData[0][keyData[0].length + 1] = number;
+					keyData[1][keyData[1].length + 1] = message;
 				}
-				 	catch (IllegalArgumentException e) {
-				 		System.out.println("Please enter a valid phone number and text message."); 
-				 		// Make this a system dialogue
-				 	}
+				else {
+					keyData[0][0] = number;
+					keyData[1][0] = message;
+					treemap.put(time, keyData);
+				}
+								
+				Intent alarmIntent = new Intent(MainActivity.this, AlarmReceiver.class);
+				alarmIntent.putExtra("TIME", time);
+				PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, alarmIntent, 0);
+				alarmManager.setExact(AlarmManager.RTC_WAKEUP, time, alarmPendingIntent);
+			
 			}
 		});
         
     }
 
 
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

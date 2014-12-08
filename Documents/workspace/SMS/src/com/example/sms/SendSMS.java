@@ -13,20 +13,16 @@ import android.util.Log;
 import android.widget.Toast;
 
 
-public class SendSMS extends BroadcastReceiver {
+public class SendSMS {
 	 static SmsManager sms = SmsManager.getDefault();
 	 String phoneNum = new String();
 	 String phoneMessage = new String();
 	 
-	 public static void sendIt(String destination, String message){
+	 public static void sendIt(String destination, String message, long identifier){
 	 	// TODO Auto-generated method stub
 		
 			sms.sendTextMessage(destination, null, message, null, null); 
+			MainActivity.treemap.remove(identifier);
 			// delete relevant files
-	}
-	
-	public void onReceive(Context context, Intent intent)
-	{
-		
-	}
+	 }
 }
